@@ -1,0 +1,187 @@
+CREATE database STORE_DATABASE_MANAGEMENT_SYSTEM;
+USE STORE_DATABASE_MANAGEMENT_SYSTEM;
+
+CREATE TABLE Category (
+    CATEGORY_ID INT PRIMARY KEY,
+    NAME VARCHAR(100),
+    DESCRIPTION TEXT
+);
+
+CREATE TABLE Customer (
+    CUST_ID INT PRIMARY KEY,
+    FIRST_NAME VARCHAR(50),
+    LAST_NAME VARCHAR(50),
+    PHONE_NUMBER VARCHAR(20)
+);
+
+
+CREATE TABLE Job (
+    JOB_ID INT PRIMARY KEY,
+    JOB_TITLE VARCHAR(100),
+    SALARY DECIMAL(10,2)
+);
+
+CREATE TABLE Location (
+    LOCATION_ID INT PRIMARY KEY,
+    PROVINCE VARCHAR(50),
+    CITY VARCHAR(50),
+    STREET VARCHAR(100)
+);
+
+CREATE TABLE Employees (
+    EMPLOYEE_ID INT PRIMARY KEY,
+    FIRST_NAME VARCHAR(50),
+    LAST_NAME VARCHAR(50),
+    EMAIL VARCHAR(100),
+    PHONE_NUMBER VARCHAR(20),
+    JOB_ID INT,
+    HIRED_DATE DATE,
+    LOCATION_ID INT,
+    FOREIGN KEY (JOB_ID) REFERENCES Job(JOB_ID),
+    FOREIGN KEY (LOCATION_ID) REFERENCES Location(LOCATION_ID)
+);
+
+CREATE TABLE Manager (
+    MANAGER_ID INT PRIMARY KEY AUTO_INCREMENT,
+    FIRST_NAME VARCHAR(50),
+    LAST_NAME VARCHAR(50),
+    LOCATION_ID INT,
+    EMAIL VARCHAR(100),
+    PHONE_NUMBER VARCHAR(20),
+    FOREIGN KEY (LOCATION_ID) REFERENCES Location(LOCATION_ID)
+);
+
+CREATE TABLE Product (
+    PRODUCT_ID INT PRIMARY KEY,
+    NAME VARCHAR(100),
+    DESCRIPTION TEXT,
+    QTY_STOCK INT,
+    PRICE DECIMAL(10,2),
+    CATEGORY_ID INT,
+    FOREIGN KEY (CATEGORY_ID) REFERENCES Category(CATEGORY_ID)
+);
+
+CREATE TABLE Supplier (
+    SUPPLIER_ID INT PRIMARY KEY,
+    COMPANY_NAME VARCHAR(100),
+    LOCATION_ID INT,
+    PHONE_NUMBER VARCHAR(20),
+    FOREIGN KEY (LOCATION_ID) REFERENCES Location(LOCATION_ID)
+);
+
+CREATE TABLE Type (
+    TYPE_ID INT PRIMARY KEY,
+    TYPE VARCHAR(50)
+);
+
+CREATE TABLE Users (
+    ID INT PRIMARY KEY,
+    FIRST_NAME VARCHAR(50),
+    LAST_NAME VARCHAR(50),
+    USERNAME VARCHAR(50) UNIQUE,
+    PASSWORD VARCHAR(100),
+    TYPE_ID INT,
+    LOCATION_ID INT,
+    PHONE_NUMBER VARCHAR(20),
+    FOREIGN KEY (TYPE_ID) REFERENCES Type(TYPE_ID),
+    FOREIGN KEY (LOCATION_ID) REFERENCES Location(LOCATION_ID)
+);
+
+INSERT INTO Category (CATEGORY_ID, NAME, DESCRIPTION) VALUES
+(1, 'Electronics', 'Electronic items and gadgets'),
+(2, 'Groceries', 'Daily groceries and essentials'),
+(3, 'Clothing', 'Men and Women Apparel');
+
+INSERT INTO Customer (CUST_ID, FIRST_NAME, LAST_NAME, PHONE_NUMBER) VALUES
+(1, 'Arun', 'Kumar', '9745000001'),
+(2, 'Deepa', 'Nair', '9847000002'),
+(3, 'Manu', 'Rajan', '9633000003');
+
+INSERT INTO Job (JOB_ID, JOB_TITLE, SALARY) VALUES
+(1, 'Store Manager', 45000.00),
+(2, 'Sales Executive', 25000.00),
+(3, 'Inventory Specialist', 30000.00);
+
+INSERT INTO Location (LOCATION_ID, PROVINCE, CITY, STREET) VALUES
+(1, 'Kerala', 'Kochi', 'MG Road'),
+(2, 'Kerala', 'Thiruvananthapuram', 'Pattom'),
+(3, 'Kerala', 'Kozhikode', 'SM Street');
+
+INSERT INTO Employees (EMPLOYEE_ID, FIRST_NAME, LAST_NAME, EMAIL, PHONE_NUMBER, JOB_ID, HIRED_DATE, LOCATION_ID) VALUES
+(1, 'Jithin', 'Varghese', 'jithin@store.com', '9995000011', 1, '2022-01-15', 1),
+(2, 'Sneha', 'Menon', 'sneha@store.com', '9995000022', 2, '2023-03-10', 2),
+(3, 'Vishnu', 'Mohan', 'vishnu@store.com', '9995000033', 3, '2021-08-01', 3);
+
+INSERT INTO Manager (FIRST_NAME, LAST_NAME, LOCATION_ID, EMAIL, PHONE_NUMBER) VALUES
+('Ravi', 'Krishnan', 1, 'ravi@store.com', '9947000001'),
+('Meera', 'Nandakumar', 2, 'meera@store.com', '9947000002');
+
+INSERT INTO Product (PRODUCT_ID, NAME, DESCRIPTION, QTY_STOCK, PRICE, CATEGORY_ID) VALUES
+(1, 'Mi Smartphone', 'Latest model with AI features', 50, 12999.00, 1),
+(2, 'Double Boiled Rice', 'Kerala Matta Rice - 5kg', 100, 450.00, 2),
+(3, 'Mundu', 'Traditional Kerala attire', 75, 250.00, 3);
+
+INSERT INTO Supplier (SUPPLIER_ID, COMPANY_NAME, LOCATION_ID, PHONE_NUMBER) VALUES
+(1, 'Electro Kerala Pvt Ltd', 1, '9447000011'),
+(2, 'Triveni Traders', 2, '9447000022'),
+(3, 'Kalyan Fabrics', 3, '9447000033');
+
+INSERT INTO Type (TYPE_ID, TYPE) VALUES
+(1, 'Admin'),
+(2, 'Manager'),
+(3, 'Staff');
+
+INSERT INTO Users (ID, FIRST_NAME, LAST_NAME, USERNAME, PASSWORD, TYPE_ID, LOCATION_ID, PHONE_NUMBER) VALUES
+(1, 'Anjali', 'Suresh', 'anjali_s', 'pass123', 1, 1, '9846000001'),
+(2, 'Hari', 'Das', 'hari_d', 'hari@2023', 2, 2, '9846000002'),
+(3, 'Neethu', 'Ravi', 'neethu_r', 'neethu@321', 3, 3, '9846000003');
+
+
+ALTER TABLE Employees
+ADD CONSTRAINT fk_emp_job FOREIGN KEY (JOB_ID) REFERENCES Job(JOB_ID),
+ADD CONSTRAINT fk_emp_location FOREIGN KEY (LOCATION_ID) REFERENCES Location(LOCATION_ID);
+
+
+ALTER TABLE Manager
+ADD CONSTRAINT fk_manager_location FOREIGN KEY (LOCATION_ID) REFERENCES Location(LOCATION_ID);
+
+
+ALTER TABLE Product
+ADD CONSTRAINT fk_product_category FOREIGN KEY (CATEGORY_ID) REFERENCES Category(CATEGORY_ID);
+
+
+ALTER TABLE Supplier
+ADD CONSTRAINT fk_supplier_location FOREIGN KEY (LOCATION_ID) REFERENCES Location(LOCATION_ID);
+
+
+ALTER TABLE Users
+ADD CONSTRAINT fk_users_type FOREIGN KEY (TYPE_ID) REFERENCES Type(TYPE_ID),
+ADD CONSTRAINT fk_users_location FOREIGN KEY (LOCATION_ID) REFERENCES Location(LOCATION_ID);
+
+SELECT * FROM Users;
+
+SELECT 
+    p.NAME AS Product_Name,
+    p.PRODUCT_ID,
+    p.CATEGORY_ID
+FROM Product p
+JOIN Category c ON p.CATEGORY_ID = c.CATEGORY_ID;
+
+SELECT 
+    e.FIRST_NAME,
+    e.LAST_NAME,
+    j.JOB_TITLE,
+    j.SALARY
+FROM Employees e
+JOIN Job j ON e.JOB_ID = j.JOB_ID;
+
+SELECT 
+    u.FIRST_NAME,
+    u.LAST_NAME,
+    t.TYPE_ID,
+    t.TYPE
+FROM Users u
+JOIN Type t ON u.TYPE_ID = t.TYPE_ID;
+
+SELECT * FROM Supplier;
+
